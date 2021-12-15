@@ -46,3 +46,8 @@ like this in your .xinitrc:
 
 The configuration of dwm is done by creating a custom config.h
 and (re)compiling the source code.
+
+## Screenshots
+
+![Alt text](./screenshots/ss1.png)
+![Alt text](./screenshots/ss2.png)
