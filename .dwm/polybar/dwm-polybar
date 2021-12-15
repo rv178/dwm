@@ -133,62 +133,6 @@ label-empty =
 ; Separator in between workspaces
 ; label-separator = |
 
-[module/bspwm]
-type = internal/bspwm
-format = <label-state> <label-mode>
-format-foreground = ${colors.foreground}
-format-background = ${colors.background}
-index-sort = true
-enable-click = true
-reverse-scroll = true
-
-label-focused = 
-; label-focused-background = ${colors.focusbg}
-; label-focused = %index%
-label-focused-underline = ${colors.foreground}
-label-focused-padding = 2
-
-label-occupied = 
-; label-occupied = %index%
-label-occupied-padding = 2
-
-label-empty = 
-; label-empty = %index%
-label-empty-padding = 2
-
-label-urgent = 𥉉
-label-urgent-padding = 2
-label-urgent-foreground = ${colors.background}
-label-urgent-background = ${colors.foreground}
-label-urgent-overline = ${colors.background}
-label-urgent-font = 0
-
-[module/i3]
-type = internal/i3
-format = <label-state> <label-mode>
-format-foreground = ${colors.foreground}
-format-background = ${colors.background}
-index-sort = true
-enable-click = true
-reverse-scroll = true
-
-label-focused = %index%
-label-focused-underline = ${colors.foreground}
-label-focused-padding = 2
-
-label-occupied = %index%
-label-occupied-padding = 2
-
-label-empty = %index%
-label-empty-padding = 2
-
-label-urgent = 𥉉
-label-urgent-padding = 2
-label-urgent-foreground = ${colors.background}
-label-urgent-background = ${colors.foreground}
-label-urgent-overline = ${colors.background}
-label-urgent-font = 0
-
 [module/cpu]
 type = internal/cpu
 interval = 2
