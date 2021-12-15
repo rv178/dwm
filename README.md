@@ -16,6 +16,8 @@ necessary as root):
 
     make clean install
 
+Also install this (fork)[https://github.com/mihirlad55/polybar-dwm-module] of polybar.
+
 ## Running dwm
 
 Add the following line to your .xinitrc to start dwm using startx:
