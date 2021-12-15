@@ -16,7 +16,7 @@ necessary as root):
 
     make clean install
 
-Also install this (fork)[https://github.com/mihirlad55/polybar-dwm-module] of polybar.
+Also install this [fork](https://github.com/mihirlad55/polybar-dwm-module) of polybar.
 
 ## Running dwm
 
