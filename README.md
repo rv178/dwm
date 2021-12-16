@@ -18,7 +18,7 @@ necessary as root):
 
 Also install this [fork](https://github.com/mihirlad55/polybar-dwm-module) of polybar.
 
-Copy the `.dwm` folder to you `~`
+Copy the `.dwm` folder to your `~`
 
 ## Running dwm
 
@@ -51,5 +51,6 @@ and (re)compiling the source code.
 
 ## Screenshots
 
+![Alt text](./screenshots/ss3.png)
 ![Alt text](./screenshots/ss1.png)
 ![Alt text](./screenshots/ss2.png)
