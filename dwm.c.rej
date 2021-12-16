@@ -1,40 +1,35 @@
 --- dwm.c
 +++ dwm.c
-@@ -1692,8 +1789,37 @@ setup(void)
- 	XSelectInput(dpy, root, wa.event_mask);
- 	grabkeys();
- 	focus(NULL);
-+	setupepoll();
+@@ -640,6 +642,7 @@ createmon(void)
+ 	m->nmaster = nmaster;
+ 	m->showbar = showbar;
+ 	m->topbar = topbar;
++	m->gappx = gappx;
+ 	m->lt[0] = &layouts[0];
+ 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+ 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
+@@ -1695,16 +1708,16 @@ tile(Monitor *m)
+ 	if (n > m->nmaster)
+ 		mw = m->nmaster ? m->ww * m->mfact : 0;
+ 	else
+-		mw = m->ww;
+-	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
++		mw = m->ww - m->gappx;
++	for (i = 0, my = ty = m->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+ 		if (i < m->nmaster) {
+-			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+-			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
+-			my += HEIGHT(c);
++			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gappx;
++			resize(c, m->wx + m->gappx, m->wy + my, mw - (2*c->bw) - m->gappx, h - (2*c->bw), 0);
++			my += HEIGHT(c) + m->gappx;
+ 		} else {
+-			h = (m->wh - ty) / (n - i);
+-			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
+-			ty += HEIGHT(c);
++			h = (m->wh - ty) / (n - i) - m->gappx;
++			resize(c, m->wx + mw + m->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gappx, h - (2*c->bw), 0);
++			ty += HEIGHT(c) + m->gappx;
+ 		}
  }
  
-+void
-+setupepoll(void)
-+{
-+	epoll_fd = epoll_create1(0);
-+	dpy_fd = ConnectionNumber(dpy);
-+	struct epoll_event dpy_event;
-+
-+	// Initialize struct to 0
-+	memset(&dpy_event, 0, sizeof(dpy_event));
-+
-+	DEBUG("Display socket is fd %d\n", dpy_fd);
-+
-+	if (epoll_fd == -1) {
-+		fputs("Failed to create epoll file descriptor", stderr);
-+	}
-+
-+	dpy_event.events = EPOLLIN;
-+	dpy_event.data.fd = dpy_fd;
-+	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, dpy_fd, &dpy_event)) {
-+		fputs("Failed to add display file descriptor to epoll", stderr);
-+		close(epoll_fd);
-+		exit(1);
-+	}
-+
-+	if (ipc_init(ipcsockpath, epoll_fd, ipccommands, LENGTH(ipccommands)) < 0) {
-+		fputs("Failed to initialize IPC\n", stderr);
-+	}
-+}
- 
- void
- seturgent(Client *c, int urg)
