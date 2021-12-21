@@ -3,7 +3,6 @@
 background = ${xrdb:background:#3B4252}
 foreground = ${xrdb:color7:#D8DEE9}
 powermenu = ${xrdb:color7:#4C566A}
-focusbg = ${xrdb:color7:#5b667c}
 ;  _                    
 ; | |__   __ _ _ __ ___ 
 ; | '_ \ / _` | '__/ __|
@@ -121,7 +120,7 @@ label-visible-padding = 2
 label-visible-font = 7
 
 ; urgent = Tag with urgency hint set
-label-urgent = %name%
+label-urgent = [!]
 label-urgent-background = ${colors.background}
 label-urgent-padding = 2
 label-urgent-font = 7
