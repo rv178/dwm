@@ -155,7 +155,7 @@ type = internal/date
 interval = 1
 format-margin = 0
 time = " %H:%M"
-; date = "%d %b"
+date = " %d %b"
 
 label = %time%
 label-foreground = ${colors.foreground}
