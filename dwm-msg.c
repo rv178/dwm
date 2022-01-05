@@ -15,7 +15,7 @@
 // clang-format off
 #define IPC_MAGIC_ARR { 'D', 'W', 'M', '-', 'I', 'P', 'C' }
 // clang-format on
-#define IPC_MAGIC_LEN 7  // Not including null char
+#define IPC_MAGIC_LEN 7 // Not including null char
 
 #define IPC_EVENT_TAG_CHANGE "tag_change_event"
 #define IPC_EVENT_CLIENT_FOCUS_CHANGE "client_focus_change_event"
@@ -29,17 +29,17 @@
 #define YDOUBLE(num) yajl_gen_double(gen, num)
 #define YBOOL(v) yajl_gen_bool(gen, v)
 #define YNULL() yajl_gen_null(gen)
-#define YARR(body)                                                             \
-  {                                                                            \
-    yajl_gen_array_open(gen);                                                  \
-    body;                                                                      \
-    yajl_gen_array_close(gen);                                                 \
+#define YARR(body)             \
+  {                            \
+    yajl_gen_array_open(gen);  \
+    body;                      \
+    yajl_gen_array_close(gen); \
   }
-#define YMAP(body)                                                             \
-  {                                                                            \
-    yajl_gen_map_open(gen);                                                    \
-    body;                                                                      \
-    yajl_gen_map_close(gen);                                                   \
+#define YMAP(body)           \
+  {                          \
+    yajl_gen_map_open(gen);  \
+    body;                    \
+    yajl_gen_map_close(gen); \
   }
 
 typedef unsigned long Window;
@@ -48,7 +48,8 @@ const char *DEFAULT_SOCKET_PATH = "/tmp/dwm.sock";
 static int sock_fd = -1;
 static unsigned int ignore_reply = 0;
 
-typedef enum IPCMessageType {
+typedef enum IPCMessageType
+{
   IPC_TYPE_RUN_COMMAND = 0,
   IPC_TYPE_GET_MONITORS = 1,
   IPC_TYPE_GET_TAGS = 2,
@@ -59,7 +60,8 @@ typedef enum IPCMessageType {
 } IPCMessageType;
 
 // Every IPC message must begin with this
-typedef struct dwm_ipc_header {
+typedef struct dwm_ipc_header
+{
   uint8_t magic[IPC_MAGIC_LEN];
   uint32_t size;
   uint8_t type;
@@ -74,24 +76,31 @@ recv_message(uint8_t *msg_type, uint32_t *reply_size, uint8_t **reply)
   char *walk = header;
 
   // Try to read header
-  while (read_bytes < to_read) {
+  while (read_bytes < to_read)
+  {
     ssize_t n = read(sock_fd, header + read_bytes, to_read - read_bytes);
 
-    if (n == 0) {
-      if (read_bytes == 0) {
+    if (n == 0)
+    {
+      if (read_bytes == 0)
+      {
         fprintf(stderr, "Unexpectedly reached EOF while reading header.");
         fprintf(stderr,
                 "Read %" PRIu32 " bytes, expected %" PRIu32 " total bytes.\n",
                 read_bytes, to_read);
         return -2;
-      } else {
+      }
+      else
+      {
         fprintf(stderr, "Unexpectedly reached EOF while reading header.");
         fprintf(stderr,
                 "Read %" PRIu32 " bytes, expected %" PRIu32 " total bytes.\n",
                 read_bytes, to_read);
         return -3;
       }
-    } else if (n == -1) {
+    }
+    else if (n == -1)
+    {
       return -1;
     }
 
@@ -99,7 +108,8 @@ recv_message(uint8_t *msg_type, uint32_t *reply_size, uint8_t **reply)
   }
 
   // Check if magic string in header matches
-  if (memcmp(walk, IPC_MAGIC, IPC_MAGIC_LEN) != 0) {
+  if (memcmp(walk, IPC_MAGIC, IPC_MAGIC_LEN) != 0)
+  {
     fprintf(stderr, "Invalid magic string. Got '%.*s', expected '%s'\n",
             IPC_MAGIC_LEN, walk, IPC_MAGIC);
     return -3;
@@ -119,17 +129,22 @@ recv_message(uint8_t *msg_type, uint32_t *reply_size, uint8_t **reply)
 
   // Extract payload
   read_bytes = 0;
-  while (read_bytes < *reply_size) {
+  while (read_bytes < *reply_size)
+  {
     ssize_t n = read(sock_fd, *reply + read_bytes, *reply_size - read_bytes);
 
-    if (n == 0) {
+    if (n == 0)
+    {
       fprintf(stderr, "Unexpectedly reached EOF while reading payload.");
       fprintf(stderr, "Read %" PRIu32 " bytes, expected %" PRIu32 " bytes.\n",
               read_bytes, *reply_size);
       free(*reply);
       return -2;
-    } else if (n == -1) {
-      if (errno == EINTR || errno == EAGAIN) continue;
+    }
+    else if (n == -1)
+    {
+      if (errno == EINTR || errno == EAGAIN)
+        continue;
       free(*reply);
       return -1;
     }
@@ -145,12 +160,15 @@ read_socket(IPCMessageType *msg_type, uint32_t *msg_size, char **msg)
 {
   int ret = -1;
 
-  while (ret != 0) {
+  while (ret != 0)
+  {
     ret = recv_message((uint8_t *)msg_type, msg_size, (uint8_t **)msg);
 
-    if (ret < 0) {
+    if (ret < 0)
+    {
       // Try again (non-fatal error)
-      if (ret == -1 && (errno == EINTR || errno == EAGAIN)) continue;
+      if (ret == -1 && (errno == EINTR || errno == EAGAIN))
+        continue;
 
       fprintf(stderr, "Error receiving response from socket. ");
       fprintf(stderr, "The connection might have been lost.\n");
@@ -166,11 +184,13 @@ write_socket(const void *buf, size_t count)
 {
   size_t written = 0;
 
-  while (written < count) {
+  while (written < count)
+  {
     const ssize_t n =
         write(sock_fd, ((uint8_t *)buf) + written, count - written);
 
-    if (n == -1) {
+    if (n == -1)
+    {
       if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
         continue;
       else
@@ -229,16 +249,21 @@ is_float(const char *s)
 
   // Floats can only have one decimal point in between or digits
   // Optionally, floats can also be below zero (negative)
-  for (int i = 0; i < len; i++) {
+  for (int i = 0; i < len; i++)
+  {
     if (isdigit(s[i]))
       continue;
-    else if (!is_dot_used && s[i] == '.' && i != 0 && i != len - 1) {
+    else if (!is_dot_used && s[i] == '.' && i != 0 && i != len - 1)
+    {
       is_dot_used = 1;
       continue;
-    } else if (!is_minus_used && s[i] == '-' && i == 0) {
+    }
+    else if (!is_minus_used && s[i] == '-' && i == 0)
+    {
       is_minus_used = 1;
       continue;
-    } else
+    }
+    else
       return 0;
   }
 
@@ -251,7 +276,8 @@ is_unsigned_int(const char *s)
   size_t len = strlen(s);
 
   // Unsigned int can only have digits
-  for (int i = 0; i < len; i++) {
+  for (int i = 0; i < len; i++)
+  {
     if (isdigit(s[i]))
       continue;
     else
@@ -267,12 +293,15 @@ is_signed_int(const char *s)
   size_t len = strlen(s);
 
   // Signed int can only have digits and a negative sign at the start
-  for (int i = 0; i < len; i++) {
+  for (int i = 0; i < len; i++)
+  {
     if (isdigit(s[i]))
       continue;
-    else if (i == 0 && s[i] == '-') {
+    else if (i == 0 && s[i] == '-')
+    {
       continue;
-    } else
+    }
+    else
       return 0;
   }
 
@@ -487,29 +516,33 @@ print_usage(const char *name)
   puts("");
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   const char *prog_name = argv[0];
 
   connect_to_socket();
-  if (sock_fd == -1) {
+  if (sock_fd == -1)
+  {
     fprintf(stderr, "Failed to connect to socket\n");
     return 1;
   }
 
   int i = 1;
-  if (i < argc && strcmp(argv[i], "--ignore-reply") == 0) {
+  if (i < argc && strcmp(argv[i], "--ignore-reply") == 0)
+  {
     ignore_reply = 1;
     i++;
   }
 
-  if (i >= argc) usage_error(prog_name, "Expected an argument, got none");
+  if (i >= argc)
+    usage_error(prog_name, "Expected an argument, got none");
 
   if (strcmp(argv[i], "help") == 0)
     print_usage(prog_name);
-  else if (strcmp(argv[i], "run_command") == 0) {
-    if (++i >= argc) usage_error(prog_name, "No command specified");
+  else if (strcmp(argv[i], "run_command") == 0)
+  {
+    if (++i >= argc)
+      usage_error(prog_name, "No command specified");
     // Command name
     char *command = argv[i];
     // Command arguments are everything after command name
@@ -517,31 +550,50 @@ main(int argc, char *argv[])
     // Number of command arguments
     int command_argc = argc - i;
     run_command(command, command_args, command_argc);
-  } else if (strcmp(argv[i], "get_monitors") == 0) {
+  }
+  else if (strcmp(argv[i], "get_monitors") == 0)
+  {
     get_monitors();
-  } else if (strcmp(argv[i], "get_tags") == 0) {
+  }
+  else if (strcmp(argv[i], "get_tags") == 0)
+  {
     get_tags();
-  } else if (strcmp(argv[i], "get_layouts") == 0) {
+  }
+  else if (strcmp(argv[i], "get_layouts") == 0)
+  {
     get_layouts();
-  } else if (strcmp(argv[i], "get_dwm_client") == 0) {
-    if (++i < argc) {
-      if (is_unsigned_int(argv[i])) {
+  }
+  else if (strcmp(argv[i], "get_dwm_client") == 0)
+  {
+    if (++i < argc)
+    {
+      if (is_unsigned_int(argv[i]))
+      {
         Window win = atol(argv[i]);
         get_dwm_client(win);
-      } else
+      }
+      else
         usage_error(prog_name, "Expected unsigned integer argument");
-    } else
+    }
+    else
       usage_error(prog_name, "Expected the window id");
-  } else if (strcmp(argv[i], "subscribe") == 0) {
-    if (++i < argc) {
-      for (int j = i; j < argc; j++) subscribe(argv[j]);
-    } else
+  }
+  else if (strcmp(argv[i], "subscribe") == 0)
+  {
+    if (++i < argc)
+    {
+      for (int j = i; j < argc; j++)
+        subscribe(argv[j]);
+    }
+    else
       usage_error(prog_name, "Expected event name");
     // Keep listening for events forever
-    while (1) {
+    while (1)
+    {
       print_socket_reply();
     }
-  } else
+  }
+  else
     usage_error(prog_name, "Invalid argument '%s'", argv[i]);
 
   return 0;

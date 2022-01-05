@@ -16,7 +16,8 @@
   { #FUNC, {FUNC }, ARGC, (ArgType[ARGC])TYPES }
 // clang-format on
 
-typedef enum IPCMessageType {
+typedef enum IPCMessageType
+{
   IPC_TYPE_RUN_COMMAND = 0,
   IPC_TYPE_GET_MONITORS = 1,
   IPC_TYPE_GET_TAGS = 2,
@@ -26,7 +27,8 @@ typedef enum IPCMessageType {
   IPC_TYPE_EVENT = 6
 } IPCMessageType;
 
-typedef enum IPCEvent {
+typedef enum IPCEvent
+{
   IPC_EVENT_TAG_CHANGE = 1 << 0,
   IPC_EVENT_CLIENT_FOCUS_CHANGE = 1 << 1,
   IPC_EVENT_LAYOUT_CHANGE = 1 << 2,
@@ -35,7 +37,8 @@ typedef enum IPCEvent {
   IPC_EVENT_FOCUSED_STATE_CHANGE = 1 << 5
 } IPCEvent;
 
-typedef enum IPCSubscriptionAction {
+typedef enum IPCSubscriptionAction
+{
   IPC_ACTION_UNSUBSCRIBE = 0,
   IPC_ACTION_SUBSCRIBE = 1
 } IPCSubscriptionAction;
@@ -43,13 +46,15 @@ typedef enum IPCSubscriptionAction {
 /**
  * Every IPC packet starts with this structure
  */
-typedef struct dwm_ipc_header {
+typedef struct dwm_ipc_header
+{
   uint8_t magic[IPC_MAGIC_LEN];
   uint32_t size;
   uint8_t type;
 } __attribute((packed)) dwm_ipc_header_t;
 
-typedef enum ArgType {
+typedef enum ArgType
+{
   ARG_TYPE_NONE = 0,
   ARG_TYPE_UINT = 1,
   ARG_TYPE_SINT = 2,
@@ -61,19 +66,22 @@ typedef enum ArgType {
 /**
  * An IPCCommand function can have either of these function signatures
  */
-typedef union ArgFunction {
+typedef union ArgFunction
+{
   void (*single_param)(const Arg *);
   void (*array_param)(const Arg *, int);
 } ArgFunction;
 
-typedef struct IPCCommand {
+typedef struct IPCCommand
+{
   char *name;
   ArgFunction func;
   unsigned int argc;
   ArgType *arg_types;
 } IPCCommand;
 
-typedef struct IPCParsedCommand {
+typedef struct IPCParsedCommand
+{
   char *name;
   Arg *args;
   ArgType *arg_types;

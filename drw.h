@@ -1,10 +1,12 @@
 /* See LICENSE file for copyright and license details. */
 
-typedef struct {
+typedef struct
+{
 	Cursor cursor;
 } Cur;
 
-typedef struct Fnt {
+typedef struct Fnt
+{
 	Display *dpy;
 	unsigned int h;
 	XftFont *xfont;
@@ -12,10 +14,16 @@ typedef struct Fnt {
 	struct Fnt *next;
 } Fnt;
 
-enum { ColFg, ColBg, ColBorder }; /* Clr scheme index */
+enum
+{
+	ColFg,
+	ColBg,
+	ColBorder
+}; /* Clr scheme index */
 typedef XftColor Clr;
 
-typedef struct {
+typedef struct
+{
 	unsigned int w, h;
 	Display *dpy;
 	int screen;
@@ -32,8 +40,8 @@ void drw_resize(Drw *drw, unsigned int w, unsigned int h);
 void drw_free(Drw *drw);
 
 /* Fnt abstraction */
-Fnt *drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount);
-void drw_fontset_free(Fnt* set);
+Fnt *drw_fontset_create(Drw *drw, const char *fonts[], size_t fontcount);
+void drw_fontset_free(Fnt *set);
 unsigned int drw_fontset_getwidth(Drw *drw, const char *text);
 void drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h);
 

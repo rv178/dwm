@@ -11,33 +11,35 @@
 void *
 ecalloc(size_t nmemb, size_t size)
 {
-	void *p;
+  void *p;
 
-	if (!(p = calloc(nmemb, size)))
-		die("calloc:");
-	return p;
+  if (!(p = calloc(nmemb, size)))
+    die("calloc:");
+  return p;
 }
 
-void
-die(const char *fmt, ...) {
-	va_list ap;
+void die(const char *fmt, ...)
+{
+  va_list ap;
 
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	va_end(ap);
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  va_end(ap);
 
-	if (fmt[0] && fmt[strlen(fmt)-1] == ':') {
-		fputc(' ', stderr);
-		perror(NULL);
-	} else {
-		fputc('\n', stderr);
-	}
+  if (fmt[0] && fmt[strlen(fmt) - 1] == ':')
+  {
+    fputc(' ', stderr);
+    perror(NULL);
+  }
+  else
+  {
+    fputc('\n', stderr);
+  }
 
-	exit(1);
+  exit(1);
 }
 
-int
-normalizepath(const char *path, char **normal)
+int normalizepath(const char *path, char **normal)
 {
   size_t len = strlen(path);
   *normal = (char *)malloc((len + 1) * sizeof(char));
@@ -45,7 +47,8 @@ normalizepath(const char *path, char **normal)
   const char *match;
   size_t newlen = 0;
 
-  while ((match = strchr(walk, '/'))) {
+  while ((match = strchr(walk, '/')))
+  {
     // Copy everything between match and walk
     strncpy(*normal + newlen, walk, match - walk);
     newlen += match - walk;
@@ -71,8 +74,7 @@ normalizepath(const char *path, char **normal)
   return 0;
 }
 
-int
-parentdir(const char *path, char **parent)
+int parentdir(const char *path, char **parent)
 {
   char *normal;
   char *walk;
@@ -80,7 +82,8 @@ parentdir(const char *path, char **parent)
   normalizepath(path, &normal);
 
   // Pointer to last '/'
-  if (!(walk = strrchr(normal, '/'))) {
+  if (!(walk = strrchr(normal, '/')))
+  {
     free(normal);
     return -1;
   }
@@ -99,8 +102,7 @@ parentdir(const char *path, char **parent)
   return 0;
 }
 
-int
-mkdirp(const char *path)
+int mkdirp(const char *path)
 {
   char *normal;
   char *walk;
@@ -110,12 +112,14 @@ mkdirp(const char *path)
   normallen = strlen(normal);
   walk = normal;
 
-  while (walk < normal + normallen + 1) {
+  while (walk < normal + normallen + 1)
+  {
     // Get length from walk to next /
     size_t n = strcspn(walk, "/");
 
     // Skip path /
-    if (n == 0) {
+    if (n == 0)
+    {
       walk++;
       continue;
     }
@@ -130,16 +134,21 @@ mkdirp(const char *path)
     strcpy(curpath + curpathlen, "");
     int res = stat(curpath, &s);
 
-    if (res < 0) {
-      if (errno == ENOENT) {
+    if (res < 0)
+    {
+      if (errno == ENOENT)
+      {
         DEBUG("Making directory %s\n", curpath);
-        if (mkdir(curpath, 0700) < 0) {
+        if (mkdir(curpath, 0700) < 0)
+        {
           fprintf(stderr, "Failed to make directory %s\n", curpath);
           perror("");
           free(normal);
           return -1;
         }
-      } else {
+      }
+      else
+      {
         fprintf(stderr, "Error statting directory %s\n", curpath);
         perror("");
         free(normal);
@@ -156,14 +165,13 @@ mkdirp(const char *path)
   return 0;
 }
 
-int
-nullterminate(char **str, size_t *len)
+int nullterminate(char **str, size_t *len)
 {
   if ((*str)[*len - 1] == '\0')
     return 0;
 
   (*len)++;
-  *str = (char*)realloc(*str, *len * sizeof(char));
+  *str = (char *)realloc(*str, *len * sizeof(char));
   (*str)[*len - 1] = '\0';
 
   return 0;
