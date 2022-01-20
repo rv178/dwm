@@ -9,13 +9,18 @@ In order to build dwm you need the Xlib header files.
 ## Directory structure
 
 `./poly-dwm/src` contains the source files for my fork with polybar support
+
 `./vnla-dwm/src` contains the source files for my fork without polybar support
 
 ## Installation
 
+For dwm without polybar support:
 ```
-cd poly-dwm/src
-cd vnla-dwm/src
+make
+```
+For dwm with polybar support:
+```
+make poly
 ```
 
 Edit config.mk to match your local setup (dwm is installed into
