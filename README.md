@@ -6,10 +6,16 @@ dwm is an extremely fast, small, and dynamic window manager for X.
 
 In order to build dwm you need the Xlib header files.
 
+## Directory structure
+
+`./poly-dwm/src` contains the source files for my fork with polybar support
+`./vnla-dwm/src` contains the source files for my fork without polybar support
+
 ## Installation
 
 ```
-cd dwm
+cd poly-dwm/src
+cd vnla-dwm/src
 ```
 
 Edit config.mk to match your local setup (dwm is installed into
