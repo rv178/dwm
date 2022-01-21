@@ -15,10 +15,13 @@ In order to build dwm you need the Xlib header files.
 ## Installation
 
 For dwm without polybar support:
+
 ```
 make
 ```
+
 For dwm with polybar support:
+
 ```
 make poly
 ```
@@ -66,6 +69,10 @@ and (re)compiling the source code.
 
 ## Screenshots
 
-![Alt text](./screenshots/ss3.png)
-![Alt text](./screenshots/ss1.png)
+#### With polybar
+
 ![Alt text](./screenshots/ss2.png)
+
+#### Without polybar
+
+![Alt text](./screenshots/ss1.png)
